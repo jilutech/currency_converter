@@ -22,6 +22,6 @@ Please don't forget the stars  ⭐⭐⭐⭐⭐
 
 # 📸Screenshots
 
-<img src="shttps://github.com/jilutech/Invoice_Generator-jetpack-compose/blob/main/app/screenshots/dashboard_light.png" width="200">
-<img src="https://github.com/jilutech/Invoice_Generator-jetpack-compose/blob/main/app/screenshots/dashboard_dark.png" width="200">
-<img src="https://github.com/jilutech/Invoice_Generator-jetpack-compose/blob/main/app/screenshots/bottomsheet.png" width="200">
+<img src="https://github.com/jilutech/currency_converter/tree/main/app/screenshots/dashboard_light.png" width="200">
+<img src="https://github.com/jilutech/currency_converter/tree/main/app/screenshots/dashboard_dark.png" width="200">
+<img src="https://github.com/jilutech/currency_converter/tree/main/app/screenshots/bottomsheet.png" width="200">
