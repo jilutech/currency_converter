@@ -29,7 +29,7 @@ class CurrencyRepoImpl(
         }catch (e : IOException){
             emit(Resource.Error("Check the internet", data = localCurrencyRate))
         }catch (e : Exception){
-            emit(Resource.Error(e.message, data = localCurrencyRate))
+            emit(Resource.Error("Check the internet", data = localCurrencyRate))
         }
 
     }

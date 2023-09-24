@@ -1,7 +1,9 @@
 package com.example.currencyconverter.presentaion.main_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,9 +23,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.example.currencyconverter.R
 import com.example.currencyconverter.presentaion.main_screen.state_model.MainScreenEvent
 import com.example.currencyconverter.presentaion.main_screen.state_model.MainScreenState
+import com.example.currencyconverter.presentaion.main_screen.state_model.SelectionSate
 
 
 @Composable
@@ -40,6 +45,15 @@ fun MainScreen(
     state : MainScreenState,
     onEvent : (MainScreenEvent) -> Unit
 ) {
+
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = state.error){
+        if (state.error != null){
+            Toast.makeText(context,state.error,Toast.LENGTH_LONG).show()
+        }
+    }
 
     val keys = listOf("1","2","3","4","5","6","7","8","9",".","0","C")
 
@@ -78,7 +92,18 @@ fun MainScreen(
                             }
                         )
 
-                        Text(text =state.fromCurrencyValue, fontSize = 40.sp, modifier = Modifier.clickable { onEvent(MainScreenEvent.FromCurrencySelected) })
+                        Text(text =state.fromCurrencyValue,
+                            fontSize = 40.sp,
+                            modifier = Modifier
+                                .clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null,
+                                    onClick ={onEvent(MainScreenEvent.FromCurrencySelected)}
+                                ),
+                            color = if (state.selection == SelectionSate.FROM){
+                                MaterialTheme.colorScheme.primary
+                            }else MaterialTheme.colorScheme.onSurface
+                        )
 
 
 
@@ -95,7 +120,18 @@ fun MainScreen(
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                         horizontalAlignment = Alignment.End
                     ) {
-                        Text(text = state.toCurrencyValue , fontSize = 40.sp, modifier = Modifier.clickable { onEvent(MainScreenEvent.ToCurrencySelected) })
+                        Text(text = state.toCurrencyValue ,
+                            fontSize = 40.sp,
+                            modifier = Modifier
+                                .clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null,
+                                    onClick ={onEvent(MainScreenEvent.ToCurrencySelected)}
+                                ),
+                            color = if (state.selection == SelectionSate.TO){
+                                MaterialTheme.colorScheme.primary
+                            }else MaterialTheme.colorScheme.onSurface
+                        )
 
                         CurrencyRow(
                             modifier = Modifier.fillMaxWidth(),
@@ -116,7 +152,7 @@ fun MainScreen(
             Box(modifier = Modifier
                 .padding(start = 40.dp)
                 .clip(CircleShape)
-                .clickable { onEvent(MainScreenEvent.SwapIconClicked)}
+                .clickable { onEvent(MainScreenEvent.SwapIconClicked) }
                 .background(color = MaterialTheme.colorScheme.background)
             ){
                 Icon(painter = painterResource(id = R.drawable.baseline_sync_24),
