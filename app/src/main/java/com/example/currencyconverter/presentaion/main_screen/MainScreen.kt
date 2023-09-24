@@ -1,5 +1,7 @@
 package com.example.currencyconverter.presentaion.main_screen
 
+import android.annotation.SuppressLint
+import androidx.compose.material3.rememberModalBottomSheetState
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,12 +20,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,11 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.currencyconverter.R
+import com.example.currencyconverter.presentaion.main_screen.common_ui.BottomSheetContent
+import com.example.currencyconverter.presentaion.main_screen.common_ui.CurrencyRow
 import com.example.currencyconverter.presentaion.main_screen.state_model.MainScreenEvent
 import com.example.currencyconverter.presentaion.main_screen.state_model.MainScreenState
 import com.example.currencyconverter.presentaion.main_screen.state_model.SelectionSate
+import kotlinx.coroutines.launch
 
-
+@SuppressLint("UnrememberedMutableInteractionSource")
+@ExperimentalMaterial3Api
 @Composable
 fun MainScreen(
     state : MainScreenState,
@@ -56,6 +71,49 @@ fun MainScreen(
     }
 
     val keys = listOf("1","2","3","4","5","6","7","8","9",".","0","C")
+
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var shouldBottomSheetShow by remember {
+        mutableStateOf(false)
+    }
+
+    if(shouldBottomSheetShow){
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { shouldBottomSheetShow = false},
+            dragHandle = {
+                         Column(
+                             Modifier
+                                 .fillMaxWidth()
+                                 .padding(10.dp),
+                             horizontalAlignment = Alignment.CenterHorizontally
+                         ) {
+
+                             BottomSheetDefaults.DragHandle()
+                             Text(text = "Select Currency",
+                                  fontFamily = FontFamily.SansSerif,
+                                  fontSize = 20.sp,
+                                  fontWeight = FontWeight.Bold
+                                 )
+                             Spacer(modifier = Modifier.height(10.dp))
+                             HorizontalDivider()
+                         }
+            },
+            content = {
+
+                BottomSheetContent(onItemClicked = { currencyCode ->
+
+                    onEvent(MainScreenEvent.BottomSheetItemClicked(currencyCode))
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) shouldBottomSheetShow = false
+                    }
+
+                }, currencyList = state.currencyRates.values.toList())
+            }
+
+        )
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -89,6 +147,8 @@ fun MainScreen(
                             currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: " ",
                             onDropDownItemClicked = {
 
+                                shouldBottomSheetShow = true
+                                onEvent(MainScreenEvent.FromCurrencySelected)
                             }
                         )
 
@@ -138,7 +198,8 @@ fun MainScreen(
                             currencyCode = state.toCurrencyCode ,
                             currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
                             onDropDownItemClicked = {
-
+                                shouldBottomSheetShow = true
+                                onEvent(MainScreenEvent.ToCurrencySelected)
                             }
                         )
 

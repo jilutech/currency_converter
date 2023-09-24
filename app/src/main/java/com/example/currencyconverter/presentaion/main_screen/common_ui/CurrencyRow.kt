@@ -1,4 +1,4 @@
-package com.example.currencyconverter.presentaion.main_screen
+package com.example.currencyconverter.presentaion.main_screen.common_ui
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
