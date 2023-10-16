@@ -8,7 +8,7 @@ import com.example.currencyconverter.data.local.entity.CurrencyRatesEntity
 
 @Database(
     entities = [CurrencyRatesEntity::class],
-    version = 1
+    version = 1, exportSchema = false
 )
 abstract class CurrencyDB : RoomDatabase() {
     abstract val currencyRateDao : CurrencyDao
