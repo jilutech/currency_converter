@@ -1,5 +1,6 @@
 package com.example.currencyconverter.data.local
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
@@ -14,23 +15,40 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
+import javax.inject.Inject
+import javax.inject.Named
 
 
-@RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 @SmallTest
+@HiltAndroidTest
 class CurrencyDaoTest {
 
-    private lateinit var currencyDB: CurrencyDB
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+
+    @Inject
+    @Named("test_db")
+    lateinit var currencyDB: CurrencyDB
     private lateinit var dao: CurrencyDao
 
 
     @Before
     fun setUp(){
-        currencyDB = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            CurrencyDB::class.java
-        ).allowMainThreadQueries().build()
+//        currencyDB = Room.inMemoryDatabaseBuilder(
+//            ApplicationProvider.getApplicationContext(),
+//            CurrencyDB::class.java
+//        ).allowMainThreadQueries().build()
 
+        hiltRule.inject()
         dao = currencyDB.currencyRateDao
     }
 
