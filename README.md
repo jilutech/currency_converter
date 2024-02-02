@@ -1,6 +1,6 @@
 # currency_converter
 
-It is an  application to create and manage invoices.
+It is an  application to convert the currency rate.
 
 In this app, I used the following :
 
